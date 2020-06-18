@@ -12,43 +12,30 @@ include_once '../config/database.php';
 // instantiate product object
 include_once '../objects/proxy.php';
 
+//instantiate database object
 $database = new Database();
 $db = $database->getConnection();
 
-$temp = new Proxy($db);
+//instantiate proxy object
+$proxy = new Proxy($db);
 
+//read data from API
+echo "Initiating read data from API...".PHP_EOL;
+$data = $proxy->read();
+echo "Reading data from API successful!".PHP_EOL; 
 
-$data = $temp->read();
-$response= json_encode($data);
-$arr= json_decode($response,true);
-
-//echo $arr['country'];
-$pid = 0;
-    foreach ($arr as $item) {
-
-        $proxy = new Proxy($db);
-        //$proxy->id = $item['ip'];
-        $proxy->created_at = $item['createdAt'];
-        $proxy->updated_at = $item['updatedAt'];
-        $proxy->ip = $item['ip'];
-        $proxy->port = $item['port'];
-        $proxy->country = $item['country'];
-        $proxy->country_code = $item['country_code'];
-        $proxy->load_time = $item['time'];
-        $proxy->type = $item['type'];
+echo "Initiating save data in database...".PHP_EOL;
+    foreach ($data as $item) {
+        $proxy->created_at = $item->createdAt;
+        $proxy->updated_at = $item->updatedAt;
+        $proxy->ip = $item->ip;
+        $proxy->port = $item->port;
+        $proxy->country = $item->country;
+        $proxy->country_code = $item->country_code;
+        $proxy->load_time = $item->time;
+        $proxy->type = $item->type;
         $proxy->provider = "proxy11";
-        //var_dump($proxy);
         $proxy->save();
-
-
-//    if($proxy->save()){
-//        // set response code - 201 created
-//        http_response_code(201);
-//
-//        // tell the user
-//        echo json_encode(array("message" => "Product was created."));
-//    }
-
     }
 
 ?>
