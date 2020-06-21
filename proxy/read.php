@@ -13,6 +13,7 @@ $db = $database->getConnection();
 
 // initialize object
 $proxy = new Proxy($db);
+// this is 
 
 // query products
 echo "Initiating read data from API...".PHP_EOL;
