@@ -23,7 +23,19 @@ class Proxy {
     public function __construct($db){
         $this->conn = $db;
     }
-
+    function fetch_all()
+	{
+		$query = "SELECT * FROM proxy_list ORDER BY id";
+		$statement = $this->connect->prepare($query);
+		if($statement->execute())
+		{
+			while($row = $statement->fetch(PDO::FETCH_ASSOC))
+			{
+				$data[] = $row;
+			}
+			return $data;
+		}
+	}
     // read products
     function read() {        
         //reading data from API
