@@ -26,14 +26,15 @@ class Proxy {
     function fetch_all()
 	{
 		$query = "SELECT * FROM proxy_list ORDER BY id";
-		$statement = $this->connect->prepare($query);
+		$statement = $this->conn->prepare($query);
 		if($statement->execute())
 		{
 			while($row = $statement->fetch(PDO::FETCH_ASSOC))
 			{
 				$data[] = $row;
 			}
-			return $data;
+            return $data;
+            echo $data;
 		}
 	}
     // read products
