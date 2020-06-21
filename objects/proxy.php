@@ -1,9 +1,9 @@
 <?php
-class Proxy{
+class Proxy {
 
     // database connection and table name
     private $conn;
-    private $table_name = "proxy_lsit";
+    private $table_name = "proxy_list";
 
     // object properties
     public $id;
@@ -25,37 +25,25 @@ class Proxy{
     }
 
     // read products
-    function read(){
-
+    function read() {        
+        //reading data from API
         $json_data = file_get_contents($this->api_endpoint);
-
+        //convert json data to array
         $response_data = json_decode($json_data);
-
-        $proxy_data = $response_data->data;
-    
+        $proxy_data = $response_data->data;  
         return $proxy_data;
-
-
-
     }
 
-    function save(){
-
-//        echo $this->ip;
-//        echo "-----";
-
+    function save() {
         $query = "INSERT INTO
                 " . $this->table_name . "
             SET
-                id=:id, created_at=:created_at, updated_at=:updated_at, ip=:ip, port=:port , country=:country , country_code=:country_code , load_time=:load_time , type=:type , provider=:provider";
-
-
+                created_at=:created_at, updated_at=:updated_at, ip=:ip, port=:port , country=:country , country_code=:country_code , load_time=:load_time , type=:type , provider=:provider";
 
         // prepare query
         $stmt = $this->conn->prepare($query);
 
         // sanitize
-        $this->id=htmlspecialchars(strip_tags($this->id));
         $this->created_at=htmlspecialchars(strip_tags($this->created_at));
         $this->updated_at=htmlspecialchars(strip_tags($this->updated_at));
         $this->ip=htmlspecialchars(strip_tags($this->ip));
@@ -67,7 +55,6 @@ class Proxy{
         $this->provider=htmlspecialchars(strip_tags($this->provider));
 
         // bind values
-        $stmt->bindParam(":id", $this->id);
         $stmt->bindParam(":created_at", $this->created_at);
         $stmt->bindParam(":updated_at", $this->updated_at);
         $stmt->bindParam(":ip", $this->ip);
@@ -79,14 +66,11 @@ class Proxy{
         $stmt->bindParam(":provider", $this->provider);
 
         // execute query
-        if($stmt->execute()){
-            //echo $this->ip;
-        } else
-        {
-            echo "asdf";
+        if($stmt->execute()) {
+            echo "Data saved successful!".PHP_EOL;
         }
-
-
-
+        else {
+            echo "Error saving data";
+        }
     }
 }
