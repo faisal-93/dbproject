@@ -17,9 +17,9 @@ $proxy = new Proxy($db);
 
 // query products
 echo "Initiating read data from API...".PHP_EOL;
-$data = $proxy->read();
+$data = $proxy-> read();
 $num = count($data);
-
+ 
 // check if more than 0 record found
 if($num>0) {
     // set response code - 200 OK
