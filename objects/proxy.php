@@ -48,10 +48,7 @@ class Proxy {
     }
 
     function save() {
-        $query = "INSERT INTO
-                " . $this->table_name . "
-            SET
-                created_at=:created_at, updated_at=:updated_at, ip=:ip, port=:port , country=:country , country_code=:country_code , load_time=:load_time , type=:type , provider=:provider";
+        $query = "INSERT INTO " . $this->table_name . " SET created_at=:created_at, updated_at=:updated_at, ip=:ip, port=:port , country=:country , country_code=:country_code , load_time=:load_time , type=:type , provider=:provider";
 
         // prepare query
         $stmt = $this->conn->prepare($query);
@@ -79,11 +76,10 @@ class Proxy {
         $stmt->bindParam(":provider", $this->provider);
 
         // execute query
-        if($stmt->execute()) {
-            echo "Data saved successful!".PHP_EOL;
-        }
-        else {
-            echo "Error saving data";
+        try{
+            $stmt->execute();
+        }catch(PDOException $exception){
+            echo "Insert execute error: " . $exception->getMessage();
         }
     }
 }
