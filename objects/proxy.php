@@ -48,38 +48,57 @@ class Proxy {
     }
 
     function save() {
-        $query = "INSERT INTO " . $this->table_name . " SET created_at=:created_at, updated_at=:updated_at, ip=:ip, port=:port , country=:country , country_code=:country_code , load_time=:load_time , type=:type , provider=:provider";
+       
+        // checking Duplicate entry before saving 
+        
+        $query = "SELECT * FROM proxy_list where ip='$this->ip'";
+       
+        $statement = $this->conn->prepare($query);
+       // $statement->bindValue("':$this->ip'", $_POST['ip'], PDO::PARAM_INT);
+        $statement->execute();
+        $count=(int)$statement->fetchColumn();
+    
+        if ($count)
+         {
+         echo "This '$this->ip' has already exists.".PHP_EOL;
+         }
+         else{
+            $query = "INSERT INTO " . $this->table_name . " SET created_at=:created_at, updated_at=:updated_at, ip=:ip, port=:port , country=:country , country_code=:country_code , load_time=:load_time , type=:type , provider=:provider";
 
-        // prepare query
-        $stmt = $this->conn->prepare($query);
+            // prepare query
+            $stmt = $this->conn->prepare($query);
+    
+            // sanitize
+            $this->created_at=htmlspecialchars(strip_tags($this->created_at));
+            $this->updated_at=htmlspecialchars(strip_tags($this->updated_at));
+            $this->ip=htmlspecialchars(strip_tags($this->ip));
+            $this->port=htmlspecialchars(strip_tags($this->port));
+            $this->country=htmlspecialchars(strip_tags($this->country));
+            $this->country_code=htmlspecialchars(strip_tags($this->country_code));
+            $this->load_time=htmlspecialchars(strip_tags($this->load_time));
+            $this->type=htmlspecialchars(strip_tags($this->type));
+            $this->provider=htmlspecialchars(strip_tags($this->provider));
+    
+            // bind values
+            $stmt->bindParam(":created_at", $this->created_at);
+            $stmt->bindParam(":updated_at", $this->updated_at);
+            $stmt->bindParam(":ip", $this->ip);
+            $stmt->bindParam(":port", $this->port);
+            $stmt->bindParam(":country", $this->country);
+            $stmt->bindParam(":country_code", $this->country_code);
+            $stmt->bindParam(":load_time", $this->load_time);
+            $stmt->bindParam(":type", $this->type);
+            $stmt->bindParam(":provider", $this->provider);
+    
+            // execute query
+            try{
+                $stmt->execute();
+                echo "Data Saved Successfully".PHP_EOL;
+            }catch(PDOException $exception){
+                echo "Insert execute error: " . $exception->getMessage();
+            }
+         }
 
-        // sanitize
-        $this->created_at=htmlspecialchars(strip_tags($this->created_at));
-        $this->updated_at=htmlspecialchars(strip_tags($this->updated_at));
-        $this->ip=htmlspecialchars(strip_tags($this->ip));
-        $this->port=htmlspecialchars(strip_tags($this->port));
-        $this->country=htmlspecialchars(strip_tags($this->country));
-        $this->country_code=htmlspecialchars(strip_tags($this->country_code));
-        $this->load_time=htmlspecialchars(strip_tags($this->load_time));
-        $this->type=htmlspecialchars(strip_tags($this->type));
-        $this->provider=htmlspecialchars(strip_tags($this->provider));
-
-        // bind values
-        $stmt->bindParam(":created_at", $this->created_at);
-        $stmt->bindParam(":updated_at", $this->updated_at);
-        $stmt->bindParam(":ip", $this->ip);
-        $stmt->bindParam(":port", $this->port);
-        $stmt->bindParam(":country", $this->country);
-        $stmt->bindParam(":country_code", $this->country_code);
-        $stmt->bindParam(":load_time", $this->load_time);
-        $stmt->bindParam(":type", $this->type);
-        $stmt->bindParam(":provider", $this->provider);
-
-        // execute query
-        try{
-            $stmt->execute();
-        }catch(PDOException $exception){
-            echo "Insert execute error: " . $exception->getMessage();
-        }
+       
     }
 }
