@@ -21,9 +21,12 @@ $proxy = new Proxy($db);
 
 //read data from API
 echo "Initiating read data from API...".PHP_EOL;
-$data = $proxy->read();
-echo "Reading data from API successful!".PHP_EOL; 
 
+$data1 = $proxy->read('https://proxy11.com/api/proxy.json?key=MTMxMQ.XtfXog.kSYsa-YIvr1LwrZOZp4VB6oTYyk');
+$data2= $proxy->read('https://free-proxy-list.net/');
+$data = array_merge($data1,$data2);
+echo "Reading data from API successful!".PHP_EOL; 
+//var_dump($data);
 echo "Initiating save data in database...".PHP_EOL;
     foreach ($data as $item) {
         $proxy->created_at = $item->createdAt;
@@ -34,7 +37,7 @@ echo "Initiating save data in database...".PHP_EOL;
         $proxy->country_code = $item->country_code;
         $proxy->load_time = $item->time;
         $proxy->type = $item->type;
-        $proxy->provider = "proxy11";
+        $proxy->provider = $item->tproviderype;
         $proxy->save();
     }
 

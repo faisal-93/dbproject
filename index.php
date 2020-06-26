@@ -1,3 +1,6 @@
+<?php 
+
+?>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -10,6 +13,9 @@
 		<div class="container">
 			<h3 align="center">Datenbanken Project</h3>
 			<br />
+
+			
+			
 			<div align="right" style="margin-bottom:5px;">
 				<button type="button" name="add_button" id="add_button" class="btn btn-success btn-xs">Add</button>
 			</div>
@@ -25,6 +31,7 @@
 					<tbody></tbody>
 				</table>
 			</div>
+			
 		</div>
 	</body>
 </html>
